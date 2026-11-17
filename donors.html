@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Donor Management</title>
+
+    <!-- CSS File -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&family=DM+Mono&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-ring"></div>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="nav-logo">
+            BLOOD<span>CARE</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="donor.html">Donors</a>
+            <a href="inventory.html">Inventory</a>
+            <a href="contact.html" class="nav-cta">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Donor Section -->
+    <section style="padding-top:120px; min-height:100vh;">
+        
+        <div class="section-eyebrow">
+            Donor Registration
+        </div>
+
+        <h1 class="section-title">
+            BLOOD <span>DONOR</span> FORM
+        </h1>
+
+        <p class="section-desc">
+            Register blood donors and maintain donor records efficiently.
+        </p>
+
+        <!-- Form Card -->
+        <div style="
+            margin-top:40px;
+            background: var(--dark2);
+            border:1px solid rgba(255,255,255,0.08);
+            border-radius:12px;
+            padding:40px;
+            max-width:700px;
+        ">
+
+            <form>
+
+                <div style="display:flex; flex-direction:column; gap:20px;">
+
+                    <input type="text"
+                        placeholder="Full Name"
+                        required
+                        style="
+                            padding:16px;
+                            background:var(--dark3);
+                            border:1px solid rgba(255,255,255,0.08);
+                            color:white;
+                            border-radius:8px;
+                            outline:none;
+                        ">
+
+                    <input type="number"
+                        placeholder="Age"
+                        required
+                        style="
+                            padding:16px;
+                            background:var(--dark3);
+                            border:1px solid rgba(255,255,255,0.08);
+                            color:white;
+                            border-radius:8px;
+                            outline:none;
+                        ">
+
+                    <select
+                        required
+                        style="
+                            padding:16px;
+                            background:var(--dark3);
+                            border:1px solid rgba(255,255,255,0.08);
+                            color:white;
+                            border-radius:8px;
+                            outline:none;
+                        ">
+                        <option value="">Select Blood Group</option>
+                        <option>A+</option>
+                        <option>A-</option>
+                        <option>B+</option>
+                        <option>B-</option>
+                        <option>AB+</option>
+                        <option>AB-</option>
+                        <option>O+</option>
+                        <option>O-</option>
+                    </select>
+
+                    <input type="tel"
+                        placeholder="Phone Number"
+                        required
+                        style="
+                            padding:16px;
+                            background:var(--dark3);
+                            border:1px solid rgba(255,255,255,0.08);
+                            color:white;
+                            border-radius:8px;
+                            outline:none;
+                        ">
+
+                    <input type="email"
+                        placeholder="Email Address"
+                        required
+                        style="
+                            padding:16px;
+                            background:var(--dark3);
+                            border:1px solid rgba(255,255,255,0.08);
+                            color:white;
+                            border-radius:8px;
+                            outline:none;
+                        ">
+
+                    <textarea
+                        rows="4"
+                        placeholder="Address"
+                        style="
+                            padding:16px;
+                            background:var(--dark3);
+                            border:1px solid rgba(255,255,255,0.08);
+                            color:white;
+                            border-radius:8px;
+                            outline:none;
+                            resize:none;
+                        "></textarea>
+
+                    <button type="submit" class="btn-primary">
+                        Register Donor
+                    </button>
+
+                </div>
+
+            </form>
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">
+            BLOOD<span>CARE</span>
+        </div>
+
+        <div class="footer-meta">
+            Blood Management System © 2026
+        </div>
+
+        <div class="footer-tag">
+            Save Lives ❤️
+        </div>
+    </footer>
+
+    <!-- Cursor Script -->
+    <script>
+        const cursor = document.querySelector('.cursor');
+        const ring = document.querySelector('.cursor-ring');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+
+            ring.style.left = e.clientX + 'px';
+            ring.style.top = e.clientY + 'px';
+        });
+    </script>
+
+</body>
+</html>

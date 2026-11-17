@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeFlow — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  body { padding-top: 120px; }
+
+  .app-nav {
+    position: fixed;
+    top: 68px; left: 0; right: 0;
+    z-index: 99;
+    display: flex;
+    background: var(--dark2);
+    border-bottom: 1px solid rgba(217,43,43,0.2);
+    padding: 0 4rem;
+  }
+  .app-nav-link {
+    padding: 0.75rem 1.2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .app-nav-link:hover { color: var(--cream); }
+  .app-nav-link.active { color: var(--cream); border-bottom-color: var(--red); }
+
+  /* Page layout */
+  .page { padding: 2rem 4rem 4rem; }
+  .page-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 0.05em;
+    color: var(--white);
+  }
+  .page-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    margin-top: 2px;
+    margin-bottom: 2rem;
+  }
+
+  /* Stat cards */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .stat-card {
+    background: var(--dark2);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 1.2rem 1.4rem;
+  }
+  .stat-card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+  .stat-card-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    line-height: 1;
+    color: var(--white);
+  }
+  .stat-card-val.red   { color: var(--red); }
+  .stat-card-val.green { color: #4CAF50; }
+  .stat-card-val.yellow{ color: #F5C842; }
+  .stat-card-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  /* Two column grid */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+
+  /* Panel */
+  .panel {
+    background: var(--dark2);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 1.4rem;
+  }
+  .panel-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+  }
+
+  /* Inventory rows */
+  .inv-row {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.7rem;
+  }
+  .inv-type {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    color: var(--red);
+    width: 36px;
+    flex-shrink: 0;
+  }
+  .inv-bar-wrap {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .inv-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.8s ease;
+  }
+  .inv-units {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    width: 48px;
+    text-align: right;
+  }
+
+  /* Activity feed */
+  .act-item {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .act-item:last-child { border-bottom: none; }
+  .act-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .act-text { font-size: 0.78rem; color: var(--muted); flex: 1; }
+  .act-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: rgba(122,96,96,0.6);
+  }
+
+  /* Mini trend bars */
+  .trend-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 60px;
+    margin-bottom: 0.5rem;
+  }
+  .trend-bar-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; }
+  .trend-bar {
+    width: 100%;
+    border-radius: 2px 2px 0 0;
+    background: var(--red);
+    transition: height 0.6s ease;
+    opacity: 0.85;
+  }
+  .trend-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* Request badges */
+  .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    padding: 0.18rem 0.5rem;
+    border-radius: 100px;
+    letter-spacing: 0.06em;
+  }
+  .badge-critical { background: rgba(217,43,43,0.15); color: var(--red); }
+  .badge-urgent   { background: rgba(245,200,66,0.15); color: #F5C842; }
+  .badge-normal   { background: rgba(76,175,80,0.15);  color: #4CAF50; }
+  .badge-pending  { background: rgba(245,200,66,0.12); color: #F5C842; }
+  .badge-fulfilled{ background: rgba(76,175,80,0.12);  color: #4CAF50; }
+  .badge-approved { background: rgba(39,201,63,0.12);  color: #27C93F; }
+  .badge-rejected { background: rgba(217,43,43,0.12);  color: var(--red); }
+
+  .req-row {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    flex-wrap: wrap;
+  }
+  .req-row:last-child { border-bottom: none; }
+  .req-hospital { font-size: 0.8rem; color: var(--cream); font-weight: 600; flex: 1; min-width: 120px; }
+  .req-blood { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--red); }
+  .req-units { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Life<span>Flow</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="dashboard.html" class="nav-cta">Dashboard</a>
+  </div>
+</nav>
+
+<div class="app-nav">
+  <a href="dashboard.html" class="app-nav-link active">⬛ Dashboard</a>
+  <a href="donors.html"    class="app-nav-link">🩸 Donors</a>
+  <a href="inventory.html" class="app-nav-link">📦 Inventory</a>
+  <a href="requests.html"  class="app-nav-link">🏥 Requests</a>
+  <a href="analytics.html" class="app-nav-link">📊 Analytics</a>
+  <a href="chat.html"      class="app-nav-link">🤖 AI Chat</a>
+</div>
+
+<div class="page">
+
+  <div class="page-title">OVERVIEW</div>
+  <div class="page-sub">REAL-TIME BLOOD BANK METRICS</div>
+
+  <!-- Stat Cards -->
+  <div class="stats-row" id="statsRow"></div>
+
+  <div class="two-col">
+
+    <!-- Inventory panel -->
+    <div class="panel">
+      <div class="panel-title">Blood Inventory</div>
+      <div id="invPanel"></div>
+    </div>
+
+    <!-- Activity panel -->
+    <div class="panel">
+      <div class="panel-title">Recent Activity</div>
+      <div id="actPanel"></div>
+    </div>
+
+  </div>
+
+  <div class="two-col">
+
+    <!-- Trend chart -->
+    <div class="panel">
+      <div class="panel-title">7-Month Donation Trend</div>
+      <div class="trend-row" id="trendChart"></div>
+      <div style="display:flex;gap:4px;" id="trendLabels"></div>
+    </div>
+
+    <!-- Recent Requests -->
+    <div class="panel">
+      <div class="panel-title">Recent Requests</div>
+      <div id="reqPanel"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="db.js"></script>
+<script>
+// ── Stat Cards ──────────────────────────────────────────────────────────────
+function renderStats() {
+  const db = LifeFlowDB;
+  const eligible  = db.donors.filter(d => d.status === 'eligible').length;
+  const pending   = db.requests.filter(r => r.status === 'pending').length;
+  const fulfilled = db.requests.filter(r => r.status === 'fulfilled').length;
+  const critical  = db.inventory.filter(i => i.units / i.capacity < 0.25).length;
+  const totalUnits= db.inventory.reduce((s, i) => s + i.units, 0);
+
+  const stats = [
+    { label: 'Total Donors',     val: db.donors.length,  sub: `${eligible} eligible`,   cls: '' },
+    { label: 'Total Units',      val: totalUnits,         sub: 'in stock',               cls: '' },
+    { label: 'Pending Requests', val: pending,            sub: 'awaiting approval',      cls: 'yellow' },
+    { label: 'Fulfilled',        val: fulfilled,          sub: 'requests',               cls: 'green' },
+    { label: 'Critical Stock',   val: critical,           sub: 'blood types',            cls: critical > 0 ? 'red' : 'green' },
+  ];
+
+  document.getElementById('statsRow').innerHTML = stats.map(s => `
+    <div class="stat-card">
+      <div class="stat-card-label">${s.label}</div>
+      <div class="stat-card-val ${s.cls}">${s.val}</div>
+      <div class="stat-card-sub">${s.sub}</div>
+    </div>
+  `).join('');
+}
+
+// ── Inventory Panel ─────────────────────────────────────────────────────────
+function renderInventory() {
+  const statusColor = (inv) => {
+    const p = inv.units / inv.capacity;
+    if (p < 0.25) return '#D92B2B';
+    if (p < 0.5)  return '#F5C842';
+    return '#4CAF50';
+  };
+
+  document.getElementById('invPanel').innerHTML = LifeFlowDB.inventory.map(inv => {
+    const pct   = Math.round((inv.units / inv.capacity) * 100);
+    const color = statusColor(inv);
+    return `
+      <div class="inv-row">
+        <span class="inv-type">${inv.type}</span>
+        <div class="inv-bar-wrap">
+          <div class="inv-bar-fill" style="width:${pct}%;background:${color}"></div>
+        </div>
+        <span class="inv-units" style="color:${color}">${inv.units}u</span>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── Activity Feed ───────────────────────────────────────────────────────────
+function renderActivity() {
+  const items = [];
+
+  // Latest donors
+  LifeFlowDB.donors.slice(0, 2).forEach(d =>
+    items.push({ text: `New donor registered — ${d.name} (${d.blood})`, color: '#4CAF50', time: 'recent' })
+  );
+
+  // Pending requests
+  LifeFlowDB.requests.filter(r => r.status === 'pending').slice(0, 2).forEach(r =>
+    items.push({ text: `Blood request from ${r.hospital} — ${r.blood}`, color: '#F5C842', time: 'pending' })
+  );
+
+  // Critical inventory
+  LifeFlowDB.inventory.filter(i => i.units / i.capacity < 0.25).forEach(i =>
+    items.push({ text: `${i.type} inventory critically low (${i.units}u)`, color: '#D92B2B', time: 'alert' })
+  );
+
+  document.getElementById('actPanel').innerHTML = items.slice(0, 7).map(a => `
+    <div class="act-item">
+      <div class="act-dot" style="background:${a.color}"></div>
+      <span class="act-text">${a.text}</span>
+      <span class="act-time">${a.time}</span>
+    </div>
+  `).join('');
+}
+
+// ── Trend Chart ─────────────────────────────────────────────────────────────
+function renderTrend() {
+  const data = [
+    { month: 'Nov', val: 124 }, { month: 'Dec', val: 187 },
+    { month: 'Jan', val: 143 }, { month: 'Feb', val: 165 },
+    { month: 'Mar', val: 198 }, { month: 'Apr', val: 221 },
+    { month: 'May', val: 247 },
+  ];
+  const max = Math.max(...data.map(d => d.val));
+
+  document.getElementById('trendChart').innerHTML = data.map(d => `
+    <div class="trend-bar-wrap">
+      <div class="trend-bar" style="height:${Math.round((d.val / max) * 100)}%"></div>
+    </div>
+  `).join('');
+
+  document.getElementById('trendLabels').innerHTML = data.map(d => `
+    <div style="flex:1;text-align:center;">
+      <span class="trend-label">${d.month}</span>
+    </div>
+  `).join('');
+}
+
+// ── Recent Requests ─────────────────────────────────────────────────────────
+function renderRequests() {
+  const recent = LifeFlowDB.requests.slice(0, 5);
+  document.getElementById('reqPanel').innerHTML = recent.map(r => `
+    <div class="req-row">
+      <span class="req-hospital">${r.hospital}</span>
+      <span class="req-blood">${r.blood}</span>
+      <span class="req-units">${r.units}u</span>
+      <span class="badge badge-${r.urgency}">${r.urgency}</span>
+      <span class="badge badge-${r.status}">${r.status}</span>
+    </div>
+  `).join('');
+}
+
+// ── Init ────────────────────────────────────────────────────────────────────
+renderStats();
+renderInventory();
+renderActivity();
+renderTrend();
+renderRequests();
+</script>
+</body>
+</html>
